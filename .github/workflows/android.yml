@@ -30,7 +30,7 @@ jobs:
       - name: Sync with Capacitor
         run: |
           # د عمرې لارښود نوم او خپل Package ID مو ورکړ
-          npx cap init "د  ويناوالۍ لارښود" "com.amanmedia.speaker" --web-dir dist
+          npx cap init "د ويناوالۍ لارښود" "com.amanmedia.speaker" --web-dir dist
           npx cap add android
           npx cap sync android
 
@@ -61,7 +61,7 @@ jobs:
           # د ډاډ لپاره د فایل چاپول
           cat AndroidManifest.xml
 
-      # ۴. د Kotlin د تکراري فایلونو ستونزه (Fix)
+      # ۴. د Kotlin د تکراري فایلونو ستونزه (Fix - د forcein لیکلو تېروتنه حل شوه)
       - name: Fix Kotlin Dependency Conflict
         run: |
           cd android
@@ -70,7 +70,7 @@ jobs:
           echo "    configurations.all {" >> build.gradle
           echo "        resolutionStrategy {" >> build.gradle
           echo "            force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'" >> build.gradle
-          echo "            forcein 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'" >> build.gradle
+          echo "            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'" >> build.gradle
           echo "            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'" >> build.gradle
           echo "        }" >> build.gradle
           echo "    }" >> build.gradle
