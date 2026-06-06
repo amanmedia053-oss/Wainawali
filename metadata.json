@@ -1,0 +1,6 @@
+{
+  "name": "د ویناوالۍ ښوونکی",
+  "description": "د ویناوالۍ، فن بیان او د جرأت لوړولو د اصولو او تمرینونو بشپړ لارښود د پښتو مینوالو لپاره د ښکلي انټرفیس سره.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
