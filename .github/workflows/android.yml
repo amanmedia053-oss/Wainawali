@@ -50,8 +50,14 @@ jobs:
       - name: Inject Permissions and Fix Configuration
         run: |
           cd android/app/src/main
+          
+          # په AndroidManifest.xml کې د انټرنیټ، غږ او ذخیره کولو اجازې ځای پر ځای کول
           sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET" \/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"\/>\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" \/>\n    <application/g' AndroidManifest.xml
+          
+          # د پرانیستي ترافیک (HTTP) او زاړه سټوریج سیسټم ملاتړ فعالول
           sed -i 's/<application/<application android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true"/g' AndroidManifest.xml
+          
+          # د بشپړ تایید لپاره د فایل کتل
           cat AndroidManifest.xml
 
       # ۷. د هغو تکراري کتابتونونو حلول چې د Kotlin ګډوډي رامنځته کوي
@@ -84,7 +90,7 @@ jobs:
 
       # ۱۰. اختیاري: په اتوماتیک ډول د ګوګل پلی ترتیباتو سره لاسلیک کول (که چیرې شتون ولري)
       - name: Sign Android Release AAB
-        uses: r0adrunner/sign-android-release@v1
+        uses: ilharp/sign-android-release@v1
         id: sign_app
         with:
           releaseDirectory: android/app/build/outputs/bundle/release
