@@ -69,4 +69,3 @@ export default function Toolbar({ onMenuClick, theme, onThemeToggle, appName }: 
     </header>
   );
 }
-
