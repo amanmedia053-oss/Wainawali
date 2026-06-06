@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Onboarding from './components/Onboarding';
+import Splash from './components/Splash';
 import Toolbar from './components/Toolbar';
 import Sidebar from './components/Sidebar';
 import BottomNavigation from './components/BottomNavigation';
@@ -26,11 +27,12 @@ export default function App() {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(() => {
     return localStorage.getItem('onboarding_completed') === 'true';
   });
+  const [showSplash, setShowSplash] = useState<boolean>(true);
 
   const [activeTab, setActiveTab] = useState<'home' | 'search' | 'about'>('home');
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('app_theme');
-    return (saved === 'dark' || saved === 'light') ? saved : 'dark';
+    return (saved === 'dark' || saved === 'light') ? saved : 'light';
   });
 
   const [progress, setProgress] = useState<Record<string, UserProgress>>(() => {
@@ -59,7 +61,7 @@ export default function App() {
       textSize: 'base',
       lineHeight: 'relaxed',
       fontFamily: 'iransans',
-      theme: 'dark',
+      theme: 'light',
       themeAccent: 'indigo'
     };
   });
@@ -90,13 +92,26 @@ export default function App() {
   useEffect(() => {
     // 1. Safe StatusBar Styling for Capacitor Native App
     if (Capacitor.isNativePlatform()) {
-      CapStatusBar.setOverlaysWebView({ overlay: true })
+      const isDark = theme === 'dark';
+      CapStatusBar.setOverlaysWebView({ overlay: false })
         .then(() => {
           CapStatusBar.setStyle({
-            style: theme === 'dark' ? CapStatusStyle.Dark : CapStatusStyle.Light
+            style: isDark ? CapStatusStyle.Dark : CapStatusStyle.Light
           }).catch(err => console.log('StatusBar setStyle error:', err));
+          
+          CapStatusBar.setBackgroundColor({
+            color: isDark ? '#000000' : '#ffffff'
+          }).catch(err => console.log('StatusBar setBackgroundColor error:', err));
         })
-        .catch(err => console.log('StatusBar overlaysWebView error:', err));
+        .catch(err => {
+          console.log('StatusBar error:', err);
+          CapStatusBar.setStyle({
+            style: isDark ? CapStatusStyle.Dark : CapStatusStyle.Light
+          }).catch(() => {});
+          CapStatusBar.setBackgroundColor({
+            color: isDark ? '#000000' : '#ffffff'
+          }).catch(() => {});
+        });
     }
   }, [theme]);
 
@@ -175,8 +190,12 @@ export default function App() {
     : { topicId: '', progressPercent: 0, isFavorite: false, isCompleted: false };
 
   // --- Render logic ---
+  if (showSplash) {
+    return <Splash theme={theme} onFinished={() => setShowSplash(false)} />;
+  }
+
   if (!isOnboardingCompleted) {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
+    return <Onboarding onComplete={handleOnboardingComplete} theme={theme} />;
   }
 
   return (
